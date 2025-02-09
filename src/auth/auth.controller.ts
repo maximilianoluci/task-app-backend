@@ -7,24 +7,28 @@ import {
   Post,
 } from "@nestjs/common";
 import { AppError, ErrorCode } from "src/errors/app-error";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { UserService } from "./user.service";
+import { AuthService } from "./auth.service";
+import { UserSignInDto } from "./dto/user-sign-in.dto";
 
-@Controller("user")
-export class UserController {
-  constructor(private readonly userService: UserService) {}
+@Controller("auth")
+export class AuthController {
+  constructor(private readonly authService: AuthService) {}
 
-  @Post()
+  @Post("sign-in")
   @HttpCode(200)
-  async create(@Body() createUserDto: CreateUserDto) {
+  async signIn(@Body() user: UserSignInDto) {
     try {
-      const newUser = await this.userService.create(createUserDto);
-      return newUser;
-    } catch (error: any) {
+      const signedInUser = await this.authService.signIn(
+        user.email,
+        user.password,
+      );
+      return signedInUser;
+    } catch (error) {
       if (error instanceof AppError) {
         if (
           error.code === ErrorCode.USER_EXISTS ||
-          error.code === ErrorCode.PASSWORD_NOT_MATCH
+          error.code === ErrorCode.PASSWORD_NOT_MATCH ||
+          error.code === ErrorCode.USER_NOT_FOUND
         ) {
           throw new BadRequestException([error.message]);
         } else if (error.code === ErrorCode.FAILED_USER_CREATION) {

@@ -1,9 +1,18 @@
 export class AppError extends Error {
-  code: number;
-  constructor(message: string, code: number) {
+  code: ErrorCode;
+  constructor(message: string, code: ErrorCode) {
     super(message);
     this.name = this.constructor.name;
     this.code = code;
     Error.captureStackTrace(this, this.constructor);
   }
+}
+
+export enum ErrorCode {
+  USER_EXISTS = 1000,
+  FAILED_USER_CREATION = 1010,
+  PASSWORD_NOT_MATCH = 1020,
+  MISSING_DATA = 1030,
+  USER_NOT_FOUND = 1040,
+  DATABASE_ERROR = 5000,
 }

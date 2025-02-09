@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import * as bcrypt from "bcrypt";
-import { AppError } from "src/errors/app-error";
+import { AppError, ErrorCode } from "src/errors/app-error";
 import { PrismaService } from "src/prisma.service";
 import { v4 as uuidv4 } from "uuid";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -14,10 +14,11 @@ export class UserService {
   constructor(private prisma: PrismaService) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserDto> {
-    if (!createUserDto) throw new Error("User cannot be empty");
+    if (!createUserDto)
+      throw new AppError("User cannot be empty", ErrorCode.MISSING_DATA);
 
     if (createUserDto.password !== createUserDto.passwordConfirm) {
-      throw new AppError("Passwords don't match", 1020);
+      throw new AppError("Passwords don't match", ErrorCode.PASSWORD_NOT_MATCH);
     }
 
     const encryptedPassword = await bcrypt.hash(createUserDto.password, salt);
@@ -35,6 +36,7 @@ export class UserService {
       const newUser = await this.prisma.user.create({ data: prismaUser });
 
       const createdUser: UserDto = {
+        id: newUser.id,
         name: newUser.name,
         email: newUser.email,
       };
@@ -43,10 +45,13 @@ export class UserService {
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === "P2002") {
-          throw new AppError("User already exists", 1000);
+          throw new AppError("User already exists", ErrorCode.USER_EXISTS);
         }
       }
-      throw new AppError("Failed to create user", 1010);
+      throw new AppError(
+        "Failed to create user",
+        ErrorCode.FAILED_USER_CREATION,
+      );
     }
   }
 }
