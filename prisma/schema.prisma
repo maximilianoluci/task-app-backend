@@ -18,4 +18,6 @@ model User {
   email    String  @unique
   name     String
   password String
+  refreshToken String @default("N/A")
+  lastUpdate DateTime @default(now())
 }

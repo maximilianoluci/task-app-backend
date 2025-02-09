@@ -18,11 +18,8 @@ export class AuthController {
   @HttpCode(200)
   async signIn(@Body() user: UserSignInDto) {
     try {
-      const signedInUser = await this.authService.signIn(
-        user.email,
-        user.password,
-      );
-      return signedInUser;
+      const jwtToken = await this.authService.signIn(user.email, user.password);
+      return jwtToken;
     } catch (error) {
       if (error instanceof AppError) {
         if (
