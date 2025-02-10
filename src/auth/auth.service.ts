@@ -70,6 +70,16 @@ export class AuthService {
       throw new AppError("User not found", ErrorCode.USER_NOT_FOUND);
     }
 
+    if (
+      userPasswordDto.newPassword === "" ||
+      userPasswordDto.newPasswordConfirm === ""
+    ) {
+      throw new AppError(
+        "Password must not be empty",
+        ErrorCode.INVALID_PASSWORD,
+      );
+    }
+
     const prismaUser = await this.prisma.user.findUnique({
       where: { id: userPasswordDto.id },
     });
