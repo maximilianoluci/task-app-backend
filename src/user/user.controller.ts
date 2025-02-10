@@ -4,7 +4,9 @@ import {
   Controller,
   HttpCode,
   InternalServerErrorException,
+  Param,
   Post,
+  Put,
 } from "@nestjs/common";
 import { AppError, ErrorCode } from "src/errors/app-error";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -32,5 +34,19 @@ export class UserController {
         }
       }
     }
+  }
+
+  @Put(":id")
+  @HttpCode(200)
+  async update(
+    @Param("id") id: string,
+    @Body() user: { name: string; email: string },
+  ) {
+    const updatedUser = await this.userService.update({
+      id,
+      name: user.name,
+      email: user.email,
+    });
+    return updatedUser;
   }
 }

@@ -14,8 +14,9 @@ export class UserService {
   constructor(private prisma: PrismaService) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserDto> {
-    if (!createUserDto)
+    if (!createUserDto) {
       throw new AppError("User cannot be empty", ErrorCode.MISSING_DATA);
+    }
 
     if (createUserDto.password !== createUserDto.passwordConfirm) {
       throw new AppError("Passwords don't match", ErrorCode.PASSWORD_NOT_MATCH);
@@ -53,5 +54,24 @@ export class UserService {
         ErrorCode.FAILED_USER_CREATION,
       );
     }
+  }
+
+  async update(userDto: UserDto) {
+    if (!userDto) {
+      throw new AppError("User cannot be empty", ErrorCode.MISSING_DATA);
+    }
+
+    const prismaUpdatedUser = await this.prisma.user.update({
+      data: userDto,
+      where: { id: userDto.id },
+    });
+
+    const updatedUser = {
+      id: prismaUpdatedUser.id,
+      name: prismaUpdatedUser.name,
+      email: prismaUpdatedUser.email,
+    };
+
+    return updatedUser;
   }
 }
