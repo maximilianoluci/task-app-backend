@@ -1,8 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable } from "@nestjs/common";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
@@ -50,6 +45,14 @@ export class AuthService {
     };
 
     const accessToken = this.generateAccessToken(user);
+
+    if (!process.env.REFRESH_TOKEN_SECRET) {
+      throw new AppError(
+        "Refresh token secret is not defined",
+        ErrorCode.MISSING_DATA,
+      );
+    }
+
     const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
 
     await this.updateRefreshToken(user.id, refreshToken);
@@ -58,8 +61,24 @@ export class AuthService {
   }
 
   generateAccessToken(user: UserDto) {
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: process.env.ACCESS_TOKEN_EXPIRATION,
+    const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
+    if (!accessTokenSecret) {
+      throw new AppError(
+        "Access token secret is not defined",
+        ErrorCode.MISSING_DATA,
+      );
+    }
+
+    const expiresIn = process.env.ACCESS_TOKEN_EXPIRATION;
+    if (!expiresIn) {
+      throw new AppError(
+        "Access token expiration is not defined",
+        ErrorCode.MISSING_DATA,
+      );
+    }
+
+    return jwt.sign(user, accessTokenSecret, {
+      expiresIn: parseInt(expiresIn, 10),
     });
   }
 
