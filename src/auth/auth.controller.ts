@@ -4,7 +4,9 @@ import {
   Controller,
   HttpCode,
   InternalServerErrorException,
+  Param,
   Post,
+  Put,
 } from "@nestjs/common";
 import { AppError, ErrorCode } from "src/errors/app-error";
 import { AuthService } from "./auth.service";
@@ -31,6 +33,35 @@ export class AuthController {
         } else if (error.code === ErrorCode.FAILED_USER_CREATION) {
           throw new InternalServerErrorException([error.message]);
         }
+      }
+    }
+  }
+
+  @Put(":id/change-password")
+  @HttpCode(200)
+  async changePassword(
+    @Param("id") id: string,
+    @Body()
+    user: {
+      currentPassword: string;
+      newPassword: string;
+      newPasswordConfirm: string;
+    },
+  ) {
+    try {
+      const updatePassword = this.authService.changePassword({
+        id,
+        currentPassword: user.currentPassword,
+        newPassword: user.newPassword,
+        newPasswordConfirm: user.newPasswordConfirm,
+      });
+      return updatePassword;
+    } catch (error) {
+      if (error instanceof AppError) {
+        if (error.code !== ErrorCode.INTERNAL_ERROR) {
+          throw new BadRequestException([error.message]);
+        }
+        throw new InternalServerErrorException([error.message]);
       }
     }
   }

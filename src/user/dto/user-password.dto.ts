@@ -1,15 +1,30 @@
-import { IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
+import {
+  IsNotEmpty,
+  IsString,
+  IsUUID,
+  MaxLength,
+  MinLength,
+} from "class-validator";
 
 export class UserPasswordDto {
-  @IsNotEmpty()
-  @MinLength(5)
-  @MaxLength(50)
-  @IsString()
-  password: string;
+  @IsUUID()
+  id: string;
 
   @IsNotEmpty()
   @MinLength(5)
   @MaxLength(50)
   @IsString()
-  passwordConfirm: string;
+  currentPassword: string;
+
+  @IsNotEmpty()
+  @MinLength(5)
+  @MaxLength(50)
+  @IsString()
+  newPassword: string;
+
+  @IsNotEmpty()
+  @MinLength(5)
+  @MaxLength(50)
+  @IsString()
+  newPasswordConfirm: string;
 }
