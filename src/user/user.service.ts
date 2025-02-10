@@ -61,17 +61,26 @@ export class UserService {
       throw new AppError("User cannot be empty", ErrorCode.MISSING_DATA);
     }
 
-    const prismaUpdatedUser = await this.prisma.user.update({
-      data: userDto,
-      where: { id: userDto.id },
-    });
+    try {
+      const prismaUpdatedUser = await this.prisma.user.update({
+        data: userDto,
+        where: { id: userDto.id },
+      });
 
-    const updatedUser = {
-      id: prismaUpdatedUser.id,
-      name: prismaUpdatedUser.name,
-      email: prismaUpdatedUser.email,
-    };
+      const updatedUser = {
+        id: prismaUpdatedUser.id,
+        name: prismaUpdatedUser.name,
+        email: prismaUpdatedUser.email,
+      };
 
-    return updatedUser;
+      return updatedUser;
+    } catch (error) {
+      if (error instanceof AppError) {
+        throw new AppError(
+          "User could not be updated",
+          ErrorCode.USER_NOT_FOUND,
+        );
+      }
+    }
   }
 }

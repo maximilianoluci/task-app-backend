@@ -22,7 +22,7 @@ export class UserController {
     try {
       const newUser = await this.userService.create(createUserDto);
       return newUser;
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         if (
           error.code === ErrorCode.USER_EXISTS ||
@@ -42,11 +42,17 @@ export class UserController {
     @Param("id") id: string,
     @Body() user: { name: string; email: string },
   ) {
-    const updatedUser = await this.userService.update({
-      id,
-      name: user.name,
-      email: user.email,
-    });
-    return updatedUser;
+    try {
+      const updatedUser = await this.userService.update({
+        id,
+        name: user.name,
+        email: user.email,
+      });
+      return updatedUser;
+    } catch (error) {
+      if (error instanceof AppError) {
+        throw new InternalServerErrorException([error.message]);
+      }
+    }
   }
 }
