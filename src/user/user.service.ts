@@ -75,12 +75,15 @@ export class UserService {
 
       return updatedUser;
     } catch (error) {
-      if (error instanceof AppError) {
-        throw new AppError(
-          "User could not be updated",
-          ErrorCode.USER_NOT_FOUND,
-        );
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === "P2025") {
+          throw new AppError("User not found", ErrorCode.USER_NOT_FOUND);
+        }
       }
+      throw new AppError(
+        "User could not be updated",
+        ErrorCode.FAILED_USER_UPDATE,
+      );
     }
   }
 }

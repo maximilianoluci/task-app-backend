@@ -51,7 +51,11 @@ export class UserController {
       return updatedUser;
     } catch (error) {
       if (error instanceof AppError) {
-        throw new InternalServerErrorException([error.message]);
+        if (error.code === ErrorCode.USER_NOT_FOUND) {
+          throw new BadRequestException([error.message]);
+        } else {
+          throw new InternalServerErrorException([error.message]);
+        }
       }
     }
   }
