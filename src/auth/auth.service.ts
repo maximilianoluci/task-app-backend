@@ -63,55 +63,49 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  async changePassword(userPasswordDto: UserPasswordDto) {
+  async changePassword(
+    userPasswordDto: UserPasswordDto,
+  ): Promise<{ id: string; name: string; email: string }> {
     if (!userPasswordDto) {
       throw new AppError("User not found", ErrorCode.USER_NOT_FOUND);
     }
 
-    try {
-      const prismaUser = await this.prisma.user.findUnique({
-        where: { id: userPasswordDto.id },
-      });
+    const prismaUser = await this.prisma.user.findUnique({
+      where: { id: userPasswordDto.id },
+    });
 
-      if (!prismaUser) {
-        throw new AppError("User not found", ErrorCode.USER_NOT_FOUND);
-      }
-
-      const isMatch = await bcrypt.compare(
-        userPasswordDto.currentPassword,
-        prismaUser.password,
-      );
-
-      if (!isMatch) {
-        throw new AppError(
-          "Old password is incorrect",
-          ErrorCode.INVALID_PASSWORD,
-        );
-      }
-
-      const hashedPassword = await bcrypt.hash(
-        userPasswordDto.newPassword,
-        salt,
-      );
-
-      const updatedUser = await this.prisma.user.update({
-        where: { id: userPasswordDto.id },
-        data: { password: hashedPassword },
-      });
-
-      return {
-        id: updatedUser.id,
-        name: updatedUser.name,
-        email: updatedUser.email,
-      };
-    } catch (error) {
-      if (error instanceof AppError) {
-        throw new AppError(
-          "Failed to change password",
-          ErrorCode.INTERNAL_ERROR,
-        );
-      }
+    if (!prismaUser) {
+      throw new AppError("User not found", ErrorCode.USER_NOT_FOUND);
     }
+
+    const isMatch = await bcrypt.compare(
+      userPasswordDto.currentPassword,
+      prismaUser.password,
+    );
+
+    if (!isMatch) {
+      throw new AppError(
+        "Old password is incorrect",
+        ErrorCode.INVALID_PASSWORD,
+      );
+    }
+
+    if (userPasswordDto.newPassword !== userPasswordDto.newPasswordConfirm) {
+      throw new AppError("Passwords don't match", ErrorCode.PASSWORD_NOT_MATCH);
+    }
+
+    const hashedPassword = await bcrypt.hash(userPasswordDto.newPassword, salt);
+
+    const updatedUser = await this.prisma.user.update({
+      where: { id: userPasswordDto.id },
+      data: { password: hashedPassword },
+    });
+
+    return {
+      id: updatedUser.id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+    };
   }
 
   generateAccessToken(user: UserDto) {

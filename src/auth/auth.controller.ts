@@ -49,7 +49,7 @@ export class AuthController {
     },
   ) {
     try {
-      const updatePassword = this.authService.changePassword({
+      const updatePassword = await this.authService.changePassword({
         id,
         currentPassword: user.currentPassword,
         newPassword: user.newPassword,
@@ -63,6 +63,7 @@ export class AuthController {
         }
         throw new InternalServerErrorException([error.message]);
       }
+      // throw new InternalServerErrorException((error as Error).message);
     }
   }
 }
