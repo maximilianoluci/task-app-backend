@@ -87,8 +87,10 @@ export class AuthService {
       return new AppError("refreshToken is mandatory", ErrorCode.MISSING_DATA);
     }
 
+    const lastUpdate = new Date();
+
     const prismaUser = await this.prisma.user.update({
-      data: { refreshToken },
+      data: { refreshToken, lastUpdate },
       where: { id: userId },
     });
 
