@@ -7,8 +7,10 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from "@nestjs/common";
 import { AppError, ErrorCode } from "src/errors/app-error";
+import { AuthGuard } from "./auth.guard";
 import { AuthService } from "./auth.service";
 import { UserSignInDto } from "./dto/user-sign-in.dto";
 
@@ -37,6 +39,7 @@ export class AuthController {
     }
   }
 
+  @UseGuards(AuthGuard)
   @Put(":id/change-password")
   @HttpCode(200)
   async changePassword(
