@@ -140,6 +140,19 @@ export class AuthService {
     });
   }
 
+  verifyToken(token: string): boolean {
+    if (!token) {
+      return false;
+    }
+
+    const decoded = jwt.verify(
+      token,
+      process.env.ACCESS_TOKEN_SECRET as string,
+    );
+    console.log(decoded);
+    return true;
+  }
+
   async updateRefreshToken(userId: string, refreshToken: string) {
     if (!refreshToken) {
       return new AppError("refreshToken is mandatory", ErrorCode.MISSING_DATA);

@@ -7,7 +7,9 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from "@nestjs/common";
+import { AuthGuard } from "src/auth/auth.guard";
 import { AppError, ErrorCode } from "src/errors/app-error";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UserService } from "./user.service";
@@ -37,6 +39,7 @@ export class UserController {
   }
 
   @Put(":id")
+  @UseGuards(AuthGuard)
   @HttpCode(200)
   async update(
     @Param("id") id: string,

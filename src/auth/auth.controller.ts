@@ -63,7 +63,6 @@ export class AuthController {
         }
         throw new InternalServerErrorException([error.message]);
       }
-      // throw new InternalServerErrorException((error as Error).message);
     }
   }
 }
