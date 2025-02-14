@@ -56,6 +56,28 @@ export class UserService {
     }
   }
 
+  async read(userDto: UserDto) {
+    if (!userDto.id) {
+      throw new AppError("User cannot be empty", ErrorCode.MISSING_DATA);
+    }
+
+    const prismaSelectedUser = await this.prisma.user.findUnique({
+      where: { id: userDto.id },
+    });
+
+    if (!prismaSelectedUser) {
+      throw new AppError("User not found", ErrorCode.USER_NOT_FOUND);
+    }
+
+    const selectedUser = {
+      id: prismaSelectedUser.id,
+      name: prismaSelectedUser.name,
+      email: prismaSelectedUser.email,
+    };
+
+    return selectedUser;
+  }
+
   async update(userDto: UserDto) {
     if (!userDto) {
       throw new AppError("User cannot be empty", ErrorCode.MISSING_DATA);

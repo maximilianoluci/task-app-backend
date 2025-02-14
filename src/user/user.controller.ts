@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   HttpCode,
   InternalServerErrorException,
   Param,
@@ -32,6 +33,30 @@ export class UserController {
         ) {
           throw new BadRequestException([error.message]);
         } else if (error.code === ErrorCode.FAILED_USER_CREATION) {
+          throw new InternalServerErrorException([error.message]);
+        }
+      }
+    }
+  }
+
+  @Get(":id")
+  @HttpCode(200)
+  async read(
+    @Param("id") id: string,
+    @Body() user: { name: string; email: string },
+  ) {
+    try {
+      const updatedUser = await this.userService.read({
+        id,
+        name: user.name,
+        email: user.email,
+      });
+      return updatedUser;
+    } catch (error) {
+      if (error instanceof AppError) {
+        if (error.code === ErrorCode.USER_NOT_FOUND) {
+          throw new BadRequestException([error.message]);
+        } else {
           throw new InternalServerErrorException([error.message]);
         }
       }
