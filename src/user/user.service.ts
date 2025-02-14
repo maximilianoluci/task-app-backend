@@ -56,26 +56,24 @@ export class UserService {
     }
   }
 
-  async read(userDto: UserDto) {
-    if (!userDto.id) {
-      throw new AppError("User cannot be empty", ErrorCode.MISSING_DATA);
+  async read(id: string) {
+    if (!id) {
+      throw new AppError("User ID cannot be empty", ErrorCode.MISSING_DATA);
     }
 
     const prismaSelectedUser = await this.prisma.user.findUnique({
-      where: { id: userDto.id },
+      where: { id },
     });
 
     if (!prismaSelectedUser) {
       throw new AppError("User not found", ErrorCode.USER_NOT_FOUND);
     }
 
-    const selectedUser = {
+    return {
       id: prismaSelectedUser.id,
       name: prismaSelectedUser.name,
       email: prismaSelectedUser.email,
     };
-
-    return selectedUser;
   }
 
   async update(userDto: UserDto) {

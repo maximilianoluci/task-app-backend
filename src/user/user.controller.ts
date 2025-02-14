@@ -41,17 +41,10 @@ export class UserController {
 
   @Get(":id")
   @HttpCode(200)
-  async read(
-    @Param("id") id: string,
-    @Body() user: { name: string; email: string },
-  ) {
+  async read(@Param("id") id: string) {
     try {
-      const updatedUser = await this.userService.read({
-        id,
-        name: user.name,
-        email: user.email,
-      });
-      return updatedUser;
+      const user = await this.userService.read(id);
+      return user;
     } catch (error) {
       if (error instanceof AppError) {
         if (error.code === ErrorCode.USER_NOT_FOUND) {
