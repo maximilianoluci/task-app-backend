@@ -56,6 +56,13 @@ export class UserController {
     }
   }
 
+  @Get()
+  @HttpCode(200)
+  async getAll() {
+    const users = await this.userService.getAll();
+    return users;
+  }
+
   @Put(":id")
   @UseGuards(AuthGuard)
   @HttpCode(200)
