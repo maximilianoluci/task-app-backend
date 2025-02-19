@@ -1,6 +1,6 @@
 import {
   IsBoolean,
-  IsDate,
+  IsDateString,
   IsEnum,
   IsOptional,
   IsString,
@@ -19,7 +19,7 @@ export class CreateTodoDto {
   @IsString()
   description: string;
 
-  @IsDate()
+  @IsDateString()
   dueDate: Date;
 
   @IsBoolean()
@@ -29,10 +29,10 @@ export class CreateTodoDto {
   @IsOptional()
   priority?: Priority;
 
-  @IsDate()
+  @IsDateString()
   createdAt: Date;
 
-  @IsDate()
+  @IsDateString()
   updatedAt: Date;
 
   @IsString()

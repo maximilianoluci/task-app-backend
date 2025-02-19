@@ -1,13 +1,13 @@
-import { IsDate, IsString } from "class-validator";
+import { IsDateString, IsString } from "class-validator";
 
 export class CreateListDto {
   @IsString()
   title: string;
 
-  @IsDate()
+  @IsDateString()
   createdAt: Date;
 
-  @IsDate()
+  @IsDateString()
   updatedAt: Date;
 
   @IsString()
