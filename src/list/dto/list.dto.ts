@@ -1,6 +1,9 @@
 import { IsDate, IsString } from "class-validator";
 
-export class CreateListDto {
+export class ListDto {
+  @IsString()
+  id: string;
+
   @IsString()
   title: string;
 

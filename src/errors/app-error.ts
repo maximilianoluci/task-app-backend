@@ -9,8 +9,8 @@ export class AppError extends Error {
 }
 
 export enum ErrorCode {
-  USER_EXISTS = 1000,
-  FAILED_USER_CREATION = 1010,
+  ALREADY_EXISTS = 1000,
+  FAILED_CREATION = 1010,
   PASSWORD_NOT_MATCH = 1020,
   MISSING_DATA = 1030,
   USER_NOT_FOUND = 1040,

@@ -27,12 +27,12 @@ export class AuthController {
     } catch (error) {
       if (error instanceof AppError) {
         if (
-          error.code === ErrorCode.USER_EXISTS ||
+          error.code === ErrorCode.ALREADY_EXISTS ||
           error.code === ErrorCode.PASSWORD_NOT_MATCH ||
           error.code === ErrorCode.USER_NOT_FOUND
         ) {
           throw new BadRequestException([error.message]);
-        } else if (error.code === ErrorCode.FAILED_USER_CREATION) {
+        } else if (error.code === ErrorCode.FAILED_CREATION) {
           throw new InternalServerErrorException([error.message]);
         }
       }

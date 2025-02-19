@@ -34,4 +34,7 @@ export class CreateTodoDto {
 
   @IsDate()
   updatedAt: Date;
+
+  @IsString()
+  listId: string;
 }

@@ -46,13 +46,10 @@ export class UserService {
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === "P2002") {
-          throw new AppError("User already exists", ErrorCode.USER_EXISTS);
+          throw new AppError("User already exists", ErrorCode.ALREADY_EXISTS);
         }
       }
-      throw new AppError(
-        "Failed to create user",
-        ErrorCode.FAILED_USER_CREATION,
-      );
+      throw new AppError("Failed to create user", ErrorCode.FAILED_CREATION);
     }
   }
 
