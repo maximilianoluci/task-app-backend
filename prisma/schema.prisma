@@ -14,10 +14,41 @@ datasource db {
 }
 
 model User {
-  id       String  @unique @id
-  email    String  @unique
-  name     String
-  password String
+  id           String  @unique @id
+  email        String  @unique
+  name         String
+  password     String
   refreshToken String @default("N/A")
-  lastUpdate DateTime @default(now())
+  lastUpdate   DateTime @default(now())
+  List         List[]
 }
+
+model List {
+  id        String   @id
+  userId    String   
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  todos     Todo[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Todo {
+  id          String   @id
+  listId      String
+  list        List     @relation(fields: [listId], references: [id], onDelete: Cascade)
+  title       String
+  description String?  
+  dueDate     DateTime?
+  completed   Boolean  @default(false)
+  priority    Priority @default(MEDIUM)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
