@@ -84,9 +84,9 @@ export class TodoService {
         description: prismaUpdatedTodo.description,
         dueDate: prismaUpdatedTodo.dueDate,
         completed: prismaUpdatedTodo.completed,
-        priority: prismaUpdatedTodo.createdAt,
+        priority:
+          prismaUpdatedTodo.priority as unknown as UpdateTodoDto["priority"],
         updatedAt: prismaUpdatedTodo.updatedAt,
-        listId: prismaUpdatedTodo.listId,
       };
 
       return updatedTodo;
