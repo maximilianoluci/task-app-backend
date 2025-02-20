@@ -52,7 +52,7 @@ export class TodoService {
           throw new AppError("Todo already exists", ErrorCode.ALREADY_EXISTS);
         }
       }
-      throw new AppError("Failed to create todo", ErrorCode.FAILED_CREATION);
+      throw new AppError("Failed to create todo", ErrorCode.CREATION_FAILED);
     }
   }
 

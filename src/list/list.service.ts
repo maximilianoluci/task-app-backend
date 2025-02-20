@@ -48,7 +48,7 @@ export class ListService {
           throw new AppError("Todo already exists", ErrorCode.ALREADY_EXISTS);
         }
       }
-      throw new AppError("Failed to create todo", ErrorCode.FAILED_CREATION);
+      throw new AppError("Failed to create todo", ErrorCode.CREATION_FAILED);
     }
   }
 
@@ -56,19 +56,44 @@ export class ListService {
     return `This action returns all list`;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} list`;
   }
 
-  update(id: number, updateListDto: UpdateListDto) {
-    if (!updateListDto) {
+  async update(id: string, updateListDto: UpdateListDto) {
+    if (!updateListDto || !id) {
       throw new AppError("List cannot be empty", ErrorCode.MISSING_DATA);
     }
 
-    return `This action updates a #${id} list`;
+    try {
+      const prismaUpdatedList = await this.prisma.list.update({
+        where: { id },
+        data: updateListDto,
+      });
+
+      updateListDto.updatedAt = new Date();
+      updateListDto.id = id;
+
+      const updatedList: ListDto = {
+        id,
+        title: prismaUpdatedList.title,
+        createdAt: prismaUpdatedList.createdAt,
+        updatedAt: prismaUpdatedList.updatedAt,
+        userId: prismaUpdatedList.userId,
+      };
+
+      return updatedList;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === "P2025") {
+          throw new AppError("User not found", ErrorCode.NOT_FOUND);
+        }
+      }
+      throw new AppError("User could not be updated", ErrorCode.UPDATE_FAILED);
+    }
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} list`;
   }
 }

@@ -32,7 +32,7 @@ export class UserController {
           error.code === ErrorCode.PASSWORD_NOT_MATCH
         ) {
           throw new BadRequestException([error.message]);
-        } else if (error.code === ErrorCode.FAILED_CREATION) {
+        } else if (error.code === ErrorCode.CREATION_FAILED) {
           throw new InternalServerErrorException([error.message]);
         }
       }
@@ -47,7 +47,7 @@ export class UserController {
       return user;
     } catch (error) {
       if (error instanceof AppError) {
-        if (error.code === ErrorCode.USER_NOT_FOUND) {
+        if (error.code === ErrorCode.NOT_FOUND) {
           throw new BadRequestException([error.message]);
         } else {
           throw new InternalServerErrorException([error.message]);
@@ -79,7 +79,7 @@ export class UserController {
       return updatedUser;
     } catch (error) {
       if (error instanceof AppError) {
-        if (error.code === ErrorCode.USER_NOT_FOUND) {
+        if (error.code === ErrorCode.NOT_FOUND) {
           throw new BadRequestException([error.message]);
         } else {
           throw new InternalServerErrorException([error.message]);

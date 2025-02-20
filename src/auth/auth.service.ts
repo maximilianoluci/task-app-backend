@@ -32,13 +32,13 @@ export class AuthService {
     });
 
     if (!prismaUser) {
-      throw new AppError("User not found", ErrorCode.USER_NOT_FOUND);
+      throw new AppError("User not found", ErrorCode.NOT_FOUND);
     }
 
     const isMatch = await bcrypt.compare(password, prismaUser.password);
 
     if (!isMatch) {
-      throw new AppError("User not found", ErrorCode.USER_NOT_FOUND);
+      throw new AppError("User not found", ErrorCode.NOT_FOUND);
     }
 
     const user: UserDto = {
@@ -67,7 +67,7 @@ export class AuthService {
     userPasswordDto: UserPasswordDto,
   ): Promise<{ id: string; name: string; email: string }> {
     if (!userPasswordDto) {
-      throw new AppError("User not found", ErrorCode.USER_NOT_FOUND);
+      throw new AppError("User not found", ErrorCode.NOT_FOUND);
     }
 
     if (
@@ -85,7 +85,7 @@ export class AuthService {
     });
 
     if (!prismaUser) {
-      throw new AppError("User not found", ErrorCode.USER_NOT_FOUND);
+      throw new AppError("User not found", ErrorCode.NOT_FOUND);
     }
 
     const isMatch = await bcrypt.compare(

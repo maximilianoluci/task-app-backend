@@ -29,10 +29,10 @@ export class AuthController {
         if (
           error.code === ErrorCode.ALREADY_EXISTS ||
           error.code === ErrorCode.PASSWORD_NOT_MATCH ||
-          error.code === ErrorCode.USER_NOT_FOUND
+          error.code === ErrorCode.NOT_FOUND
         ) {
           throw new BadRequestException([error.message]);
-        } else if (error.code === ErrorCode.FAILED_CREATION) {
+        } else if (error.code === ErrorCode.CREATION_FAILED) {
           throw new InternalServerErrorException([error.message]);
         }
       }

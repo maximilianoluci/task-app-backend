@@ -49,7 +49,7 @@ export class UserService {
           throw new AppError("User already exists", ErrorCode.ALREADY_EXISTS);
         }
       }
-      throw new AppError("Failed to create user", ErrorCode.FAILED_CREATION);
+      throw new AppError("Failed to create user", ErrorCode.CREATION_FAILED);
     }
   }
 
@@ -63,7 +63,7 @@ export class UserService {
     });
 
     if (!prismaSelectedUser) {
-      throw new AppError("User not found", ErrorCode.USER_NOT_FOUND);
+      throw new AppError("User not found", ErrorCode.NOT_FOUND);
     }
 
     return {
@@ -108,13 +108,10 @@ export class UserService {
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === "P2025") {
-          throw new AppError("User not found", ErrorCode.USER_NOT_FOUND);
+          throw new AppError("User not found", ErrorCode.NOT_FOUND);
         }
       }
-      throw new AppError(
-        "User could not be updated",
-        ErrorCode.FAILED_USER_UPDATE,
-      );
+      throw new AppError("User could not be updated", ErrorCode.UPDATE_FAILED);
     }
   }
 }
