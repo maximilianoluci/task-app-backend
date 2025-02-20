@@ -5,22 +5,19 @@ import {
   IsOptional,
   IsString,
 } from "class-validator";
-
-export enum Priority {
-  LOW,
-  MEDIUM,
-  HIGH,
-}
+import { Priority } from "./todo.dto";
 
 export class CreateTodoDto {
   @IsString()
   title: string;
 
   @IsString()
-  description: string;
+  @IsOptional()
+  description?: string;
 
   @IsDateString()
-  dueDate: Date;
+  @IsOptional()
+  dueDate?: Date;
 
   @IsBoolean()
   completed: boolean;

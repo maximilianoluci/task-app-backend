@@ -60,18 +60,47 @@ export class TodoService {
     return `This action returns all todo`;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} todo`;
   }
 
-  update(id: number, updateTodoDto: UpdateTodoDto) {
-    if (!updateTodoDto) {
+  async update(id: string, updateTodoDto: UpdateTodoDto) {
+    if (!updateTodoDto || !id) {
       throw new AppError("Todo cannot be empty", ErrorCode.MISSING_DATA);
     }
-    return `This action updates a #${id} todo`;
+
+    try {
+      updateTodoDto.updatedAt = new Date();
+      updateTodoDto.id = id;
+
+      const prismaUpdatedTodo = await this.prisma.todo.update({
+        where: { id },
+        data: updateTodoDto,
+      });
+
+      const updatedTodo: UpdateTodoDto = {
+        id,
+        title: prismaUpdatedTodo.title,
+        description: prismaUpdatedTodo.description,
+        dueDate: prismaUpdatedTodo.dueDate,
+        completed: prismaUpdatedTodo.completed,
+        priority: prismaUpdatedTodo.createdAt,
+        updatedAt: prismaUpdatedTodo.updatedAt,
+        listId: prismaUpdatedTodo.listId,
+      };
+
+      return updatedTodo;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === "P2025") {
+          throw new AppError("User not found", ErrorCode.NOT_FOUND);
+        }
+      }
+      throw new AppError("User could not be updated", ErrorCode.UPDATE_FAILED);
+    }
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} todo`;
   }
 }

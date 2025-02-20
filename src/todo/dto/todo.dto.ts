@@ -5,9 +5,14 @@ import {
   IsOptional,
   IsString,
 } from "class-validator";
-import { Priority } from "./todo.dto";
 
-export class UpdateTodoDto {
+export enum Priority {
+  LOW,
+  MEDIUM,
+  HIGH,
+}
+
+export class TodoDto {
   @IsString()
   id: string;
 
@@ -30,5 +35,11 @@ export class UpdateTodoDto {
   priority?: Priority;
 
   @IsDateString()
+  createdAt: Date;
+
+  @IsDateString()
   updatedAt: Date;
+
+  @IsString()
+  listId: string;
 }

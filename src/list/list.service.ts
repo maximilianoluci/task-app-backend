@@ -66,13 +66,13 @@ export class ListService {
     }
 
     try {
+      updateListDto.updatedAt = new Date();
+      updateListDto.id = id;
+
       const prismaUpdatedList = await this.prisma.list.update({
         where: { id },
         data: updateListDto,
       });
-
-      updateListDto.updatedAt = new Date();
-      updateListDto.id = id;
 
       const updatedList: ListDto = {
         id,
