@@ -52,8 +52,20 @@ export class ListService {
     }
   }
 
-  findAll() {
-    return `This action returns all list`;
+  async findAll() {
+    const prismaLists = await this.prisma.list.findMany();
+
+    const lists = prismaLists.map((prismaList) => {
+      return {
+        id: prismaList.id,
+        title: prismaList.title,
+        createdAt: prismaList.createdAt,
+        updatedAt: prismaList.updatedAt,
+        userId: prismaList.userId,
+      };
+    });
+
+    return lists;
   }
 
   findOne(id: string) {

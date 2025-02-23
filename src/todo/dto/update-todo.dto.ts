@@ -16,18 +16,17 @@ export class UpdateTodoDto {
 
   @IsString()
   @IsOptional()
-  description?: string;
+  description?: string | null;
 
   @IsDateString()
   @IsOptional()
-  dueDate?: Date;
+  dueDate?: Date | null;
 
   @IsBoolean()
   completed: boolean;
 
   @IsEnum(Priority)
-  @IsOptional()
-  priority?: Priority;
+  priority: Priority;
 
   @IsDateString()
   updatedAt: Date;

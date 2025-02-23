@@ -41,14 +41,8 @@ model Todo {
   description String?  
   dueDate     DateTime?
   completed   Boolean  @default(false)
-  priority    Priority @default(MEDIUM)
+  priority    String   @default("LOW")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-}
-
-enum Priority {
-  LOW
-  MEDIUM
-  HIGH
 }
 

@@ -4,6 +4,7 @@ import { AppError, ErrorCode } from "src/errors/app-error";
 import { PrismaService } from "src/prisma.service";
 import { v4 as uuidv4 } from "uuid";
 import { CreateTodoDto } from "./dto/create-todo.dto";
+import { Priority } from "./dto/todo.dto";
 import { UpdateTodoDto } from "./dto/update-todo.dto";
 
 @Injectable()
@@ -56,8 +57,24 @@ export class TodoService {
     }
   }
 
-  findAll() {
-    return `This action returns all todo`;
+  async findAll() {
+    const prismaTodos = await this.prisma.todo.findMany();
+
+    const todos = prismaTodos.map((prismaTodo) => {
+      return {
+        id: prismaTodo.id,
+        title: prismaTodo.title,
+        description: prismaTodo.description,
+        dueDate: prismaTodo.dueDate,
+        completed: prismaTodo.completed,
+        priority: prismaTodo.priority as Priority,
+        createdAt: prismaTodo.createdAt,
+        updatedAt: prismaTodo.updatedAt,
+        listId: prismaTodo.listId,
+      };
+    });
+
+    return todos;
   }
 
   findOne(id: string) {
@@ -84,8 +101,7 @@ export class TodoService {
         description: prismaUpdatedTodo.description,
         dueDate: prismaUpdatedTodo.dueDate,
         completed: prismaUpdatedTodo.completed,
-        priority:
-          prismaUpdatedTodo.priority as unknown as UpdateTodoDto["priority"],
+        priority: prismaUpdatedTodo.priority as Priority,
         updatedAt: prismaUpdatedTodo.updatedAt,
       };
 
