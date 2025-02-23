@@ -68,8 +68,37 @@ export class ListService {
     return lists;
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} list`;
+  async findOne(id: string) {
+    if (!id) {
+      throw new AppError("List id cannot be empty", ErrorCode.MISSING_DATA);
+    }
+
+    try {
+      const prismaList = await this.prisma.list.findUnique({
+        where: { id },
+      });
+
+      if (!prismaList) {
+        throw new AppError("List not found", ErrorCode.NOT_FOUND);
+      }
+
+      const list: ListDto = {
+        id: prismaList.id,
+        title: prismaList.title,
+        createdAt: prismaList.createdAt,
+        updatedAt: prismaList.updatedAt,
+        userId: prismaList.userId,
+      };
+
+      return list;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === "P2016") {
+          throw new AppError("List not found", ErrorCode.NOT_FOUND);
+        }
+      }
+      throw new AppError("List could not be found", ErrorCode.NOT_FOUND);
+    }
   }
 
   async update(updateListDto: UpdateListDto) {
@@ -104,7 +133,32 @@ export class ListService {
     }
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} list`;
+  async remove(id: string) {
+    if (!id) {
+      throw new AppError("List id cannot be empty", ErrorCode.MISSING_DATA);
+    }
+
+    try {
+      const prismaDeletedList = await this.prisma.list.delete({
+        where: { id },
+      });
+
+      const deletedList = {
+        id: prismaDeletedList.id,
+        title: prismaDeletedList.title,
+        createdAt: prismaDeletedList.createdAt,
+        updatedAt: prismaDeletedList.updatedAt,
+        userId: prismaDeletedList.userId,
+      };
+
+      return deletedList;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === "P2025") {
+          throw new AppError("List not found", ErrorCode.NOT_FOUND);
+        }
+      }
+      throw new AppError("List could not be deleted", ErrorCode.DELETE_FAILED);
+    }
   }
 }

@@ -77,8 +77,41 @@ export class TodoService {
     return todos;
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} todo`;
+  async findOne(id: string) {
+    if (!id) {
+      throw new AppError("Todo id cannot be empty", ErrorCode.MISSING_DATA);
+    }
+
+    try {
+      const prismaTodo = await this.prisma.todo.findUnique({
+        where: { id },
+      });
+
+      if (!prismaTodo) {
+        throw new AppError("Todo not found", ErrorCode.NOT_FOUND);
+      }
+
+      const todo = {
+        id: prismaTodo.id,
+        title: prismaTodo.title,
+        description: prismaTodo.description,
+        dueDate: prismaTodo.dueDate,
+        completed: prismaTodo.completed,
+        priority: prismaTodo.priority as Priority,
+        createdAt: prismaTodo.createdAt,
+        updatedAt: prismaTodo.updatedAt,
+        listId: prismaTodo.listId,
+      };
+
+      return todo;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === "P2025") {
+          throw new AppError("Todo not found", ErrorCode.NOT_FOUND);
+        }
+      }
+      throw new AppError("Todo could not be found", ErrorCode.NOT_FOUND);
+    }
   }
 
   async update(updateTodoDto: UpdateTodoDto) {
@@ -115,7 +148,36 @@ export class TodoService {
     }
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} todo`;
+  async remove(id: string) {
+    if (!id) {
+      throw new AppError("Todo id cannot be empty", ErrorCode.MISSING_DATA);
+    }
+
+    try {
+      const prismaTodo = await this.prisma.todo.delete({
+        where: { id },
+      });
+
+      const deletedTodo = {
+        id: prismaTodo.id,
+        title: prismaTodo.title,
+        description: prismaTodo.description,
+        dueDate: prismaTodo.dueDate,
+        completed: prismaTodo.completed,
+        priority: prismaTodo.priority as Priority,
+        createdAt: prismaTodo.createdAt,
+        updatedAt: prismaTodo.updatedAt,
+        listId: prismaTodo.listId,
+      };
+
+      return deletedTodo;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === "P2025") {
+          throw new AppError("Todo not found", ErrorCode.NOT_FOUND);
+        }
+      }
+      throw new AppError("Todo could not be deleted", ErrorCode.DELETE_FAILED);
+    }
   }
 }
