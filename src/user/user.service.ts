@@ -114,4 +114,31 @@ export class UserService {
       throw new AppError("User could not be updated", ErrorCode.UPDATE_FAILED);
     }
   }
+
+  async remove(id: string) {
+    if (!id) {
+      throw new AppError("User ID cannot be empty", ErrorCode.MISSING_DATA);
+    }
+
+    try {
+      const prismaUser = await this.prisma.user.delete({
+        where: { id },
+      });
+
+      const deletedUser = {
+        id: prismaUser.id,
+        name: prismaUser.name,
+        email: prismaUser.email,
+      };
+
+      return deletedUser;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === "P2025") {
+          throw new AppError("User not found", ErrorCode.NOT_FOUND);
+        }
+      }
+      throw new AppError("User could not be deleted", ErrorCode.DELETE_FAILED);
+    }
+  }
 }

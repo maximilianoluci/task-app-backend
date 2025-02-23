@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   InternalServerErrorException,
@@ -77,6 +78,24 @@ export class UserController {
         email: user.email,
       });
       return updatedUser;
+    } catch (error) {
+      if (error instanceof AppError) {
+        if (error.code === ErrorCode.NOT_FOUND) {
+          throw new BadRequestException([error.message]);
+        } else {
+          throw new InternalServerErrorException([error.message]);
+        }
+      }
+    }
+  }
+
+  @Delete(":id")
+  @UseGuards(AuthGuard)
+  @HttpCode(200)
+  async remove(@Param("id") id: string) {
+    try {
+      const deletedUser = await this.userService.remove(id);
+      return deletedUser;
     } catch (error) {
       if (error instanceof AppError) {
         if (error.code === ErrorCode.NOT_FOUND) {
