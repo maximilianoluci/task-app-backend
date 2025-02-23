@@ -72,22 +72,21 @@ export class ListService {
     return `This action returns a #${id} list`;
   }
 
-  async update(id: string, updateListDto: UpdateListDto) {
-    if (!updateListDto || !id) {
+  async update(updateListDto: UpdateListDto) {
+    if (!updateListDto) {
       throw new AppError("List cannot be empty", ErrorCode.MISSING_DATA);
     }
 
     try {
       updateListDto.updatedAt = new Date();
-      updateListDto.id = id;
 
       const prismaUpdatedList = await this.prisma.list.update({
-        where: { id },
         data: updateListDto,
+        where: { id: updateListDto.id },
       });
 
       const updatedList: ListDto = {
-        id,
+        id: prismaUpdatedList.id,
         title: prismaUpdatedList.title,
         createdAt: prismaUpdatedList.createdAt,
         updatedAt: prismaUpdatedList.updatedAt,
@@ -98,10 +97,10 @@ export class ListService {
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === "P2025") {
-          throw new AppError("User not found", ErrorCode.NOT_FOUND);
+          throw new AppError("List not found", ErrorCode.NOT_FOUND);
         }
       }
-      throw new AppError("User could not be updated", ErrorCode.UPDATE_FAILED);
+      throw new AppError("List could not be updated", ErrorCode.UPDATE_FAILED);
     }
   }
 

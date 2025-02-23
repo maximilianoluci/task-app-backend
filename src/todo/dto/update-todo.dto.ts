@@ -4,11 +4,12 @@ import {
   IsEnum,
   IsOptional,
   IsString,
+  IsUUID,
 } from "class-validator";
 import { Priority } from "./todo.dto";
 
 export class UpdateTodoDto {
-  @IsString()
+  @IsUUID()
   id: string;
 
   @IsString()

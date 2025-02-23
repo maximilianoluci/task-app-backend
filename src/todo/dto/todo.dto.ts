@@ -4,6 +4,7 @@ import {
   IsEnum,
   IsOptional,
   IsString,
+  IsUUID,
 } from "class-validator";
 
 export enum Priority {
@@ -13,7 +14,7 @@ export enum Priority {
 }
 
 export class TodoDto {
-  @IsString()
+  @IsUUID()
   id: string;
 
   @IsString()

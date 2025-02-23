@@ -81,22 +81,21 @@ export class TodoService {
     return `This action returns a #${id} todo`;
   }
 
-  async update(id: string, updateTodoDto: UpdateTodoDto) {
-    if (!updateTodoDto || !id) {
+  async update(updateTodoDto: UpdateTodoDto) {
+    if (!updateTodoDto) {
       throw new AppError("Todo cannot be empty", ErrorCode.MISSING_DATA);
     }
 
     try {
       updateTodoDto.updatedAt = new Date();
-      updateTodoDto.id = id;
 
       const prismaUpdatedTodo = await this.prisma.todo.update({
-        where: { id },
         data: updateTodoDto,
+        where: { id: updateTodoDto.id },
       });
 
       const updatedTodo: UpdateTodoDto = {
-        id,
+        id: prismaUpdatedTodo.id,
         title: prismaUpdatedTodo.title,
         description: prismaUpdatedTodo.description,
         dueDate: prismaUpdatedTodo.dueDate,
@@ -109,10 +108,10 @@ export class TodoService {
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === "P2025") {
-          throw new AppError("User not found", ErrorCode.NOT_FOUND);
+          throw new AppError("Todo not found", ErrorCode.NOT_FOUND);
         }
       }
-      throw new AppError("User could not be updated", ErrorCode.UPDATE_FAILED);
+      throw new AppError("Todo could not be updated", ErrorCode.UPDATE_FAILED);
     }
   }
 

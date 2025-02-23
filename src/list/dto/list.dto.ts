@@ -1,7 +1,7 @@
-import { IsDateString, IsString } from "class-validator";
+import { IsDateString, IsString, IsUUID } from "class-validator";
 
 export class ListDto {
-  @IsString()
+  @IsUUID()
   id: string;
 
   @IsString()
