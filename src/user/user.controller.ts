@@ -41,11 +41,18 @@ export class UserController {
     }
   }
 
+  @Get()
+  @HttpCode(200)
+  async findAll() {
+    const users = await this.userService.findAll();
+    return users;
+  }
+
   @Get(":id")
   @HttpCode(200)
-  async read(@Param("id") id: string) {
+  async findOne(@Param("id") id: string) {
     try {
-      const user = await this.userService.read(id);
+      const user = await this.userService.findOne(id);
       return user;
     } catch (error) {
       if (error instanceof AppError) {
@@ -56,13 +63,6 @@ export class UserController {
         }
       }
     }
-  }
-
-  @Get()
-  @HttpCode(200)
-  async getAll() {
-    const users = await this.userService.getAll();
-    return users;
   }
 
   @Put(":id")

@@ -53,7 +53,21 @@ export class UserService {
     }
   }
 
-  async read(id: string) {
+  async findAll() {
+    const prismaUsers = await this.prisma.user.findMany();
+
+    const users = prismaUsers.map((prismaUser) => {
+      return {
+        id: prismaUser.id,
+        name: prismaUser.name,
+        email: prismaUser.email,
+      };
+    });
+
+    return users;
+  }
+
+  async findOne(id: string) {
     if (!id) {
       throw new AppError("User ID cannot be empty", ErrorCode.MISSING_DATA);
     }
@@ -71,20 +85,6 @@ export class UserService {
       name: prismaSelectedUser.name,
       email: prismaSelectedUser.email,
     };
-  }
-
-  async getAll() {
-    const prismaUsers = await this.prisma.user.findMany();
-
-    const users = prismaUsers.map((prismaUser) => {
-      return {
-        id: prismaUser.id,
-        name: prismaUser.name,
-        email: prismaUser.email,
-      };
-    });
-
-    return users;
   }
 
   async update(id: string, userDto: UpdateUserDto) {
