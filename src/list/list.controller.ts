@@ -4,8 +4,8 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
-  Put,
 } from "@nestjs/common";
 import { CreateListDto } from "./dto/create-list.dto";
 import { UpdateListDto } from "./dto/update-list.dto";
@@ -30,7 +30,7 @@ export class ListController {
     return this.listService.findOne(id);
   }
 
-  @Put(":id")
+  @Patch(":id")
   update(@Param("id") id: string, @Body() updateListDto: UpdateListDto) {
     return this.listService.update(id, updateListDto);
   }

@@ -7,8 +7,8 @@ import {
   HttpCode,
   InternalServerErrorException,
   Param,
+  Patch,
   Post,
-  Put,
   UseGuards,
 } from "@nestjs/common";
 import { AuthGuard } from "src/auth/auth.guard";
@@ -65,7 +65,7 @@ export class UserController {
     }
   }
 
-  @Put(":id")
+  @Patch(":id")
   @UseGuards(AuthGuard)
   @HttpCode(200)
   async update(@Param("id") id: string, @Body() user: UpdateUserDto) {

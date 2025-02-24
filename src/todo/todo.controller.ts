@@ -4,8 +4,8 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
-  Put,
 } from "@nestjs/common";
 import { CreateTodoDto } from "./dto/create-todo.dto";
 import { UpdateTodoDto } from "./dto/update-todo.dto";
@@ -30,7 +30,7 @@ export class TodoController {
     return this.todoService.findOne(id);
   }
 
-  @Put(":id")
+  @Patch(":id")
   update(
     @Param("id") id: string,
     @Body()
