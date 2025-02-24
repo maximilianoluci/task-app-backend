@@ -1,3 +1,4 @@
+import { PartialType } from "@nestjs/mapped-types";
 import {
   IsBoolean,
   IsDateString,
@@ -5,19 +6,20 @@ import {
   IsOptional,
   IsString,
 } from "class-validator";
+import { CreateTodoDto } from "./create-todo.dto";
 import { Priority } from "./todo.dto";
 
-export class UpdateTodoDto {
+export class UpdateTodoDto extends PartialType(CreateTodoDto) {
   @IsString()
   title: string;
 
   @IsString()
   @IsOptional()
-  description?: string | null;
+  description?: string;
 
   @IsDateString()
   @IsOptional()
-  dueDate?: Date | null;
+  dueDate?: Date;
 
   @IsBoolean()
   completed: boolean;
