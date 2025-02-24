@@ -25,7 +25,8 @@ export class UpdateTodoDto extends PartialType(CreateTodoDto) {
   completed: boolean;
 
   @IsEnum(Priority)
-  priority: Priority;
+  @IsOptional()
+  priority?: Priority;
 
   @IsDateString()
   updatedAt: Date;
