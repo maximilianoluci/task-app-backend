@@ -4,7 +4,6 @@ import { AppError, ErrorCode } from "src/errors/app-error";
 import { PrismaService } from "src/prisma.service";
 import { v4 as uuidv4 } from "uuid";
 import { CreateListDto } from "./dto/create-list.dto";
-import { ListDto } from "./dto/list.dto";
 import { UpdateListDto } from "./dto/update-list.dto";
 
 @Injectable()
@@ -33,7 +32,7 @@ export class ListService {
 
       const newList = await this.prisma.list.create({ data: prismaList });
 
-      const createdList: ListDto = {
+      const createdList = {
         id: newList.id,
         title: newList.title,
         createdAt: newList.createdAt,
@@ -82,7 +81,7 @@ export class ListService {
         throw new AppError("List not found", ErrorCode.NOT_FOUND);
       }
 
-      const list: ListDto = {
+      const list = {
         id: prismaList.id,
         title: prismaList.title,
         createdAt: prismaList.createdAt,
@@ -101,20 +100,18 @@ export class ListService {
     }
   }
 
-  async update(updateListDto: UpdateListDto) {
+  async update(id: string, updateListDto: UpdateListDto) {
     if (!updateListDto) {
       throw new AppError("List cannot be empty", ErrorCode.MISSING_DATA);
     }
 
     try {
-      updateListDto.updatedAt = new Date();
-
       const prismaUpdatedList = await this.prisma.list.update({
-        data: updateListDto,
-        where: { id: updateListDto.id },
+        data: { ...updateListDto, updatedAt: new Date().toISOString() },
+        where: { id },
       });
 
-      const updatedList: ListDto = {
+      const updatedList = {
         id: prismaUpdatedList.id,
         title: prismaUpdatedList.title,
         createdAt: prismaUpdatedList.createdAt,

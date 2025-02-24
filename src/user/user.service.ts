@@ -36,7 +36,7 @@ export class UserService {
 
       const newUser = await this.prisma.user.create({ data: prismaUser });
 
-      const createdUser: UserDto = {
+      const createdUser = {
         id: newUser.id,
         name: newUser.name,
         email: newUser.email,
@@ -87,7 +87,7 @@ export class UserService {
     return users;
   }
 
-  async update(userDto: UserDto) {
+  async update(id: string, userDto: UserDto) {
     if (!userDto) {
       throw new AppError("User cannot be empty", ErrorCode.MISSING_DATA);
     }
@@ -95,7 +95,7 @@ export class UserService {
     try {
       const prismaUpdatedUser = await this.prisma.user.update({
         data: userDto,
-        where: { id: userDto.id },
+        where: { id },
       });
 
       const updatedUser = {

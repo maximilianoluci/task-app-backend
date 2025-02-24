@@ -41,7 +41,7 @@ export class AuthService {
       throw new AppError("User not found", ErrorCode.NOT_FOUND);
     }
 
-    const user: UserDto = {
+    const user = {
       id: prismaUser.id,
       name: prismaUser.name,
       email: prismaUser.email,

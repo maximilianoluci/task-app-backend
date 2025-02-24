@@ -8,7 +8,7 @@ import {
   Put,
 } from "@nestjs/common";
 import { CreateTodoDto } from "./dto/create-todo.dto";
-import { Priority } from "./dto/todo.dto";
+import { UpdateTodoDto } from "./dto/update-todo.dto";
 import { TodoService } from "./todo.service";
 
 @Controller("todo")
@@ -34,24 +34,9 @@ export class TodoController {
   update(
     @Param("id") id: string,
     @Body()
-    updateTodoDto: {
-      title: string;
-      description: string;
-      dueDate: Date;
-      completed: boolean;
-      updatedAt: Date;
-      priority: Priority;
-    },
+    updateTodoDto: UpdateTodoDto,
   ) {
-    return this.todoService.update({
-      id,
-      title: updateTodoDto.title,
-      description: updateTodoDto.description,
-      dueDate: updateTodoDto.dueDate,
-      completed: updateTodoDto.completed,
-      updatedAt: updateTodoDto.updatedAt,
-      priority: updateTodoDto.priority,
-    });
+    return this.todoService.update(id, updateTodoDto);
   }
 
   @Delete(":id")

@@ -14,6 +14,7 @@ import {
 import { AuthGuard } from "src/auth/auth.guard";
 import { AppError, ErrorCode } from "src/errors/app-error";
 import { CreateUserDto } from "./dto/create-user.dto";
+import { UserDto } from "./dto/user.dto";
 import { UserService } from "./user.service";
 
 @Controller("user")
@@ -67,16 +68,9 @@ export class UserController {
   @Put(":id")
   @UseGuards(AuthGuard)
   @HttpCode(200)
-  async update(
-    @Param("id") id: string,
-    @Body() user: { name: string; email: string },
-  ) {
+  async update(@Param("id") id: string, @Body() user: UserDto) {
     try {
-      const updatedUser = await this.userService.update({
-        id,
-        name: user.name,
-        email: user.email,
-      });
+      const updatedUser = await this.userService.update(id, user);
       return updatedUser;
     } catch (error) {
       if (error instanceof AppError) {

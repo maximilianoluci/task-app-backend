@@ -114,20 +114,18 @@ export class TodoService {
     }
   }
 
-  async update(updateTodoDto: UpdateTodoDto) {
+  async update(id: string, updateTodoDto: UpdateTodoDto) {
     if (!updateTodoDto) {
       throw new AppError("Todo cannot be empty", ErrorCode.MISSING_DATA);
     }
 
     try {
-      updateTodoDto.updatedAt = new Date();
-
       const prismaUpdatedTodo = await this.prisma.todo.update({
-        data: updateTodoDto,
-        where: { id: updateTodoDto.id },
+        data: { ...updateTodoDto, updatedAt: new Date().toISOString() },
+        where: { id },
       });
 
-      const updatedTodo: UpdateTodoDto = {
+      const updatedTodo = {
         id: prismaUpdatedTodo.id,
         title: prismaUpdatedTodo.title,
         description: prismaUpdatedTodo.description,
