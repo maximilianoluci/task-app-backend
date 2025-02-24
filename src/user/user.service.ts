@@ -5,7 +5,7 @@ import { AppError, ErrorCode } from "src/errors/app-error";
 import { PrismaService } from "src/prisma.service";
 import { v4 as uuidv4 } from "uuid";
 import { CreateUserDto } from "./dto/create-user.dto";
-import { UserDto } from "./dto/user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
 
 const salt = 10;
 
@@ -13,7 +13,7 @@ const salt = 10;
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createUserDto: CreateUserDto): Promise<UserDto> {
+  async create(createUserDto: CreateUserDto): Promise<UpdateUserDto> {
     if (!createUserDto) {
       throw new AppError("User cannot be empty", ErrorCode.MISSING_DATA);
     }
@@ -87,7 +87,7 @@ export class UserService {
     return users;
   }
 
-  async update(id: string, userDto: UserDto) {
+  async update(id: string, userDto: UpdateUserDto) {
     if (!userDto) {
       throw new AppError("User cannot be empty", ErrorCode.MISSING_DATA);
     }

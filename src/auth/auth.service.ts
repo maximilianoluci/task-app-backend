@@ -3,8 +3,8 @@ import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import { AppError, ErrorCode } from "src/errors/app-error";
 import { PrismaService } from "src/prisma.service";
+import { UpdateUserDto } from "src/user/dto/update-user.dto";
 import { UserPasswordDto } from "src/user/dto/user-password.dto";
-import { UserDto } from "src/user/dto/user.dto";
 
 const salt = 10;
 
@@ -118,7 +118,7 @@ export class AuthService {
     };
   }
 
-  generateAccessToken(user: UserDto) {
+  generateAccessToken(user: UpdateUserDto) {
     const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
     if (!accessTokenSecret) {
       throw new AppError(
