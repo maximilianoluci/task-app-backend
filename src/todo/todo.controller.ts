@@ -21,8 +21,8 @@ export class TodoController {
   }
 
   @Get()
-  findAll() {
-    return this.todoService.findAll();
+  findAll(listId: string) {
+    return this.todoService.findAll(listId);
   }
 
   @Get(":id")

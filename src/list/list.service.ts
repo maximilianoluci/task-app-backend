@@ -51,18 +51,20 @@ export class ListService {
     }
   }
 
-  async findAll() {
-    const prismaLists = await this.prisma.list.findMany();
-
-    const lists = prismaLists.map((prismaList) => {
-      return {
-        id: prismaList.id,
-        title: prismaList.title,
-        createdAt: prismaList.createdAt,
-        updatedAt: prismaList.updatedAt,
-        userId: prismaList.userId,
-      };
+  async findAll(userId: string) {
+    const prismaLists = await this.prisma.list.findMany({
+      where: { userId },
     });
+
+    const lists = prismaLists.map(
+      ({ id, title, createdAt, updatedAt, userId }) => ({
+        id,
+        title,
+        createdAt,
+        updatedAt,
+        userId,
+      }),
+    );
 
     return lists;
   }

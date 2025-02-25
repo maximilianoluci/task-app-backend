@@ -57,22 +57,34 @@ export class TodoService {
     }
   }
 
-  async findAll() {
-    const prismaTodos = await this.prisma.todo.findMany();
-
-    const todos = prismaTodos.map((prismaTodo) => {
-      return {
-        id: prismaTodo.id,
-        title: prismaTodo.title,
-        description: prismaTodo.description,
-        dueDate: prismaTodo.dueDate,
-        completed: prismaTodo.completed,
-        priority: prismaTodo.priority as Priority,
-        createdAt: prismaTodo.createdAt,
-        updatedAt: prismaTodo.updatedAt,
-        listId: prismaTodo.listId,
-      };
+  async findAll(listId: string) {
+    const prismaTodos = await this.prisma.todo.findMany({
+      where: { listId },
     });
+
+    const todos = prismaTodos.map(
+      ({
+        id,
+        title,
+        description,
+        dueDate,
+        completed,
+        priority,
+        createdAt,
+        updatedAt,
+        listId,
+      }) => ({
+        id,
+        title,
+        description,
+        dueDate,
+        completed,
+        priority,
+        createdAt,
+        updatedAt,
+        listId,
+      }),
+    );
 
     return todos;
   }

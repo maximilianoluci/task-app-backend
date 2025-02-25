@@ -21,8 +21,8 @@ export class ListController {
   }
 
   @Get()
-  findAll() {
-    return this.listService.findAll();
+  findAll(userId: string) {
+    return this.listService.findAll(userId);
   }
 
   @Get(":id")
