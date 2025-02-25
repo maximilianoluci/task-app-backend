@@ -20,8 +20,8 @@ export class ListController {
     return this.listService.create(createListDto);
   }
 
-  @Get()
-  findAll(userId: string) {
+  @Get(":userId")
+  findAll(@Param("userId") userId: string) {
     return this.listService.findAll(userId);
   }
 
