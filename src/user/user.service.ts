@@ -53,20 +53,6 @@ export class UserService {
     }
   }
 
-  async findAll() {
-    const prismaUsers = await this.prisma.user.findMany();
-
-    const users = prismaUsers.map((prismaUser) => {
-      return {
-        id: prismaUser.id,
-        name: prismaUser.name,
-        email: prismaUser.email,
-      };
-    });
-
-    return users;
-  }
-
   async findOne(id: string) {
     if (!id) {
       throw new AppError("User ID cannot be empty", ErrorCode.MISSING_DATA);

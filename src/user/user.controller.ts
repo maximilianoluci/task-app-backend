@@ -41,13 +41,6 @@ export class UserController {
     }
   }
 
-  @Get()
-  @HttpCode(200)
-  async findAll() {
-    const users = await this.userService.findAll();
-    return users;
-  }
-
   @Get(":id")
   @HttpCode(200)
   async findOne(@Param("id") id: string) {
