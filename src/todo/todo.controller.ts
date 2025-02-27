@@ -20,7 +20,7 @@ export class TodoController {
     return this.todoService.create(createTodoDto);
   }
 
-  @Get(":listId")
+  @Get(":listId/all")
   findAll(@Param("listId") listId: string) {
     return this.todoService.findAll(listId);
   }

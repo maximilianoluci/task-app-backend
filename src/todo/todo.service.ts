@@ -61,30 +61,19 @@ export class TodoService {
     const prismaTodos = await this.prisma.todo.findMany({
       where: { listId },
     });
+    console.log(prismaTodos);
 
-    const todos = prismaTodos.map(
-      ({
-        id,
-        title,
-        description,
-        dueDate,
-        completed,
-        priority,
-        createdAt,
-        updatedAt,
-        listId,
-      }) => ({
-        id,
-        title,
-        description,
-        dueDate,
-        completed,
-        priority,
-        createdAt,
-        updatedAt,
-        listId,
-      }),
-    );
+    const todos = prismaTodos.map((todo) => ({
+      id: todo.id,
+      title: todo.title,
+      description: todo.description,
+      dueDate: todo.dueDate,
+      completed: todo.completed,
+      priority: todo.priority as Priority,
+      createdAt: todo.createdAt,
+      updatedAt: todo.updatedAt,
+      listId: todo.listId,
+    }));
 
     return todos;
   }
@@ -93,37 +82,25 @@ export class TodoService {
     if (!id) {
       throw new AppError("Todo id cannot be empty", ErrorCode.MISSING_DATA);
     }
+    const prismaTodo = await this.prisma.todo.findUnique({
+      where: { id },
+    });
 
-    try {
-      const prismaTodo = await this.prisma.todo.findUnique({
-        where: { id },
-      });
-
-      if (!prismaTodo) {
-        throw new AppError("Todo not found", ErrorCode.NOT_FOUND);
-      }
-
-      const todo = {
-        id: prismaTodo.id,
-        title: prismaTodo.title,
-        description: prismaTodo.description,
-        dueDate: prismaTodo.dueDate,
-        completed: prismaTodo.completed,
-        priority: prismaTodo.priority as Priority,
-        createdAt: prismaTodo.createdAt,
-        updatedAt: prismaTodo.updatedAt,
-        listId: prismaTodo.listId,
-      };
-
-      return todo;
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === "P2025") {
-          throw new AppError("Todo not found", ErrorCode.NOT_FOUND);
-        }
-      }
-      throw new AppError("Todo could not be found", ErrorCode.NOT_FOUND);
+    if (!prismaTodo) {
+      throw new AppError("Todo not found", ErrorCode.NOT_FOUND);
     }
+
+    return {
+      id: prismaTodo.id,
+      title: prismaTodo.title,
+      description: prismaTodo.description,
+      dueDate: prismaTodo.dueDate,
+      completed: prismaTodo.completed,
+      priority: prismaTodo.priority as Priority,
+      createdAt: prismaTodo.createdAt,
+      updatedAt: prismaTodo.updatedAt,
+      listId: prismaTodo.listId,
+    };
   }
 
   async update(id: string, updateTodoDto: UpdateTodoDto) {

@@ -56,15 +56,13 @@ export class ListService {
       where: { userId },
     });
 
-    const lists = prismaLists.map(
-      ({ id, title, createdAt, updatedAt, userId }) => ({
-        id,
-        title,
-        createdAt,
-        updatedAt,
-        userId,
-      }),
-    );
+    const lists = prismaLists.map((list) => ({
+      id: list.id,
+      title: list.title,
+      createdAt: list.createdAt,
+      updatedAt: list.updatedAt,
+      userId: list.userId,
+    }));
 
     return lists;
   }
@@ -74,32 +72,21 @@ export class ListService {
       throw new AppError("List id cannot be empty", ErrorCode.MISSING_DATA);
     }
 
-    try {
-      const prismaList = await this.prisma.list.findUnique({
-        where: { id },
-      });
+    const prismaList = await this.prisma.list.findUnique({
+      where: { id },
+    });
 
-      if (!prismaList) {
-        throw new AppError("List not found", ErrorCode.NOT_FOUND);
-      }
-
-      const list = {
-        id: prismaList.id,
-        title: prismaList.title,
-        createdAt: prismaList.createdAt,
-        updatedAt: prismaList.updatedAt,
-        userId: prismaList.userId,
-      };
-
-      return list;
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === "P2016") {
-          throw new AppError("List not found", ErrorCode.NOT_FOUND);
-        }
-      }
-      throw new AppError("List could not be found", ErrorCode.NOT_FOUND);
+    if (!prismaList) {
+      throw new AppError("List not found", ErrorCode.NOT_FOUND);
     }
+
+    return {
+      id: prismaList.id,
+      title: prismaList.title,
+      createdAt: prismaList.createdAt,
+      updatedAt: prismaList.updatedAt,
+      userId: prismaList.userId,
+    };
   }
 
   async update(id: string, updateListDto: UpdateListDto) {
