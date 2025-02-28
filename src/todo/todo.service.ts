@@ -24,6 +24,7 @@ export class TodoService {
         description: createTodoDto.description,
         dueDate: createTodoDto.dueDate,
         completed: createTodoDto.completed,
+        priority: createTodoDto.priority,
         createdAt: new Date(),
         updatedAt: new Date(),
         list: {
