@@ -29,5 +29,8 @@ export class UpdateTodoDto extends PartialType(CreateTodoDto) {
   priority?: Priority;
 
   @IsDateString()
+  createdAt: Date;
+
+  @IsDateString()
   updatedAt: Date;
 }

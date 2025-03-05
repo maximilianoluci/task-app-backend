@@ -121,6 +121,7 @@ export class TodoService {
         dueDate: prismaUpdatedTodo.dueDate,
         completed: prismaUpdatedTodo.completed,
         priority: prismaUpdatedTodo.priority as Priority,
+        createdAt: prismaUpdatedTodo.createdAt,
         updatedAt: prismaUpdatedTodo.updatedAt,
       };
 
