@@ -62,7 +62,6 @@ export class TodoService {
     const prismaTodos = await this.prisma.todo.findMany({
       where: { listId },
     });
-    console.log(prismaTodos);
 
     const todos = prismaTodos.map((todo) => ({
       id: todo.id,
